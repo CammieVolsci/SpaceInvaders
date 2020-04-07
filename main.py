@@ -5,25 +5,27 @@ import pygame, sys, jogador, inimigos
 FPS = 30
 
 WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
+WINDOW_HEIGHT = 700
 
 BACKGROUND_COLOR = (255,255,255)
 BACKGROUND_IMAGE = "assets/vialactea.png"
 ICON_IMAGE = "assets/lander.png"
 
-ALIENSHIP_NUMBER = 3
-ALIENSHIP_SEPARACAO = 30
+ALIEN_NUMBER = 5
+ALIEN_SEPARACAO = 5
+ALIEN_TOTAL = 0
 
 DISPLAYSURF = None
 
 ## MAIN ##
 def main():
-    global DISPLAYSURF, ALIENSHIP_NUMBER
+    global DISPLAYSURF, ALIEN_NUMBER
 
     pygame.init()
 
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
+
 
     pygame.display.set_caption("Space Invaders")
     game_icon = pygame.image.load(ICON_IMAGE).convert()
@@ -36,13 +38,20 @@ def main():
 
     alien_row1 = []
     alien_row2 = [] 
+    alien_row3 = [] 
+    FRAME_TIME = 0
     
-    for i in range(ALIENSHIP_NUMBER):
-        alien_row1.append(inimigos.alienship(50 + i*(100+ALIENSHIP_SEPARACAO),50))
-        alien_row2.append(inimigos.alienship(50 + i*(100+ALIENSHIP_SEPARACAO),150))
+    for i in range(ALIEN_NUMBER):
+        alien_row1.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),50,"assets/alien1.png","assets/alien2.png"))
+        alien_row2.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),130,"assets/alien1c.png","assets/alien2c.png"))
+        alien_row3.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),210,"assets/alien1e.png","assets/alien2e.png"))
 
     ## Game loop
     while True: 
+        FRAME_TIME += FPSCLOCK.get_time()
+        if FRAME_TIME > 300:
+            FRAME_TIME = 0
+        
         DISPLAYSURF.fill(BACKGROUND_COLOR)
         DISPLAYSURF.blit(game_bg,(0,0))
 
@@ -63,44 +72,35 @@ def main():
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                     player.mover = 0
-
-        ## Movimento dos inimigos aliens
-        for i in range(ALIENSHIP_NUMBER):     
-            if alien_row1[ALIENSHIP_NUMBER-1].x>=688:
-                alien_row1[i].mover = -0.8
-                alien_row1[i].direcao = "Esquerda"
-            elif alien_row1[0].x<=0:
-                alien_row1[i].mover = 0.8
-                alien_row1[i].direcao = "Direita"
-
-            if alien_row2[ALIENSHIP_NUMBER-1].x>=688:
-                alien_row2[i].mover = -0.8
-                alien_row2[i].direcao = "Esquerda" 
-            elif alien_row1[0].x<=0:
-                alien_row2[i].mover = 0.8
-                alien_row2[i].direcao = "Direita"
-
+            
         player.movimento(DISPLAYSURF)
 
-        for i in range(ALIENSHIP_NUMBER):
-            alien_row1[i].movimento(DISPLAYSURF)
-            alien_row2[i].movimento(DISPLAYSURF)
+        ## Movimento dos inimigos aliens
+        for i in range(ALIEN_NUMBER): 
+            alien_row1[i].movimento(DISPLAYSURF, ALIEN_SEPARACAO, i, ALIEN_NUMBER, FRAME_TIME)
+            alien_row2[i].movimento(DISPLAYSURF, ALIEN_SEPARACAO, i, ALIEN_NUMBER, FRAME_TIME)
+            alien_row3[i].movimento(DISPLAYSURF, ALIEN_SEPARACAO, i, ALIEN_NUMBER, FRAME_TIME)
 
         if player_laser.state == "Atirando":
             player_laser.atira(DISPLAYSURF)
-        
-        for i in range(ALIENSHIP_NUMBER):   
-            if alien_row1[i].rect != 0 and player_laser.teste_colisao(alien_row1[i]):
-                alien_row1[i].kill()
-                print("Colidiu 1")
-                player_laser.reset(player.x,player.y)
-            elif alien_row2[i].rect != 0 and player_laser.teste_colisao(alien_row2[i]):
-                alien_row2[i].kill()
-                print("Colidiu 2")
-                player_laser.reset(player.x,player.y)
+            for i in range(ALIEN_NUMBER):   
+                if alien_row1[i].rect != 0 and player_laser.teste_colisao(alien_row1[i]):
+                    alien_row1[i].kill()
+                    print("Colidiu 1")
+                    player_laser.reset(player.x,player.y)
+                elif alien_row2[i].rect != 0 and player_laser.teste_colisao(alien_row2[i]):
+                    alien_row2[i].kill()
+                    print("Colidiu 2")
+                    player_laser.reset(player.x,player.y) 
+                elif alien_row3[i].rect != 0 and player_laser.teste_colisao(alien_row3[i]):
+                    alien_row3[i].kill()
+                    print("Colidiu 2")
+                    player_laser.reset(player.x,player.y)
 
         pygame.display.update()  
         FPSCLOCK.tick(FPS)     
+        print(FRAME_TIME)
+
 
 ## MAIN ##
 

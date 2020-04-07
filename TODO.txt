@@ -1,0 +1,5 @@
+
+1. Trocar assets dos aliens e do jogador
+2. Fazer aliens ficarem mais rápidos quando morrem
+3. Fazer tiro do alien
+4. Fazer aliens chegar perto do jogador

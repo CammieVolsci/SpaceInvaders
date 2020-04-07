@@ -8,8 +8,8 @@ class playership(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
-        self.x = 370
-        self.y = 480
+        self.x = 390
+        self.y = 600
         self.mover = 0
         self.image = pygame.image.load(PLAYERSHIP_IMAGE)      
         self.rect = self.image.get_rect() 
@@ -26,7 +26,7 @@ class playership(pygame.sprite.Sprite):
 
         self.rect.x = self.x
         self.rect.y = self.y
-        pygame.draw.rect(screen,WHITE,self.rect)    
+        #pygame.draw.rect(screen,WHITE,self.rect)    
         
 
 class laser(pygame.sprite.Sprite):
@@ -51,7 +51,7 @@ class laser(pygame.sprite.Sprite):
         self.rect.x = self.x
         self.rect.y = self.y
 
-        pygame.draw.rect(screen,WHITE,self.rect)    
+        #pygame.draw.rect(screen,WHITE,self.rect)    
 
     def reset(self,x,y):
         self.state = "Espera"
