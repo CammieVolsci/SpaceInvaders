@@ -2,16 +2,16 @@ import pygame
 
 PLAYERSHIP_IMAGE = "assets/playership.png"
 LASER_IMAGE = "assets/laser.png"
-WHITE = (255, 255, 255)
 
 class playership(pygame.sprite.Sprite):
 
     def __init__(self):
         super().__init__()
         self.x = 390
-        self.y = 600
+        self.y = 550
         self.mover = 0
-        self.image = pygame.image.load(PLAYERSHIP_IMAGE)      
+        self.image = pygame.image.load(PLAYERSHIP_IMAGE)    
+        self.image = pygame.transform.scale(self.image,(84,50))  
         self.rect = self.image.get_rect() 
         self.width = self.image.get_rect().width     
 
@@ -25,9 +25,7 @@ class playership(pygame.sprite.Sprite):
             self.x = 688
 
         self.rect.x = self.x
-        self.rect.y = self.y
-        #pygame.draw.rect(screen,WHITE,self.rect)    
-        
+        self.rect.y = self.y         
 
 class laser(pygame.sprite.Sprite):
 
@@ -37,6 +35,7 @@ class laser(pygame.sprite.Sprite):
         self.y = 480
         self.state = "Espera"
         self.image = pygame.image.load(LASER_IMAGE)
+        self.image = pygame.transform.scale(self.image,(10,25))
         self.rect = self.image.get_rect()
         self.height = self.image.get_rect().height
 
@@ -49,9 +48,7 @@ class laser(pygame.sprite.Sprite):
             self.state = "Espera"
         
         self.rect.x = self.x
-        self.rect.y = self.y
-
-        #pygame.draw.rect(screen,WHITE,self.rect)    
+        self.rect.y = self.y  
 
     def reset(self,x,y):
         self.state = "Espera"
