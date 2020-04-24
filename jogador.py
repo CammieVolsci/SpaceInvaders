@@ -2,6 +2,7 @@ import pygame
 
 PLAYERSHIP_IMAGE = "assets/playership.png"
 LASER_IMAGE = "assets/laser.png"
+EXPLOSION_IMAGE = "assets/explosion.png"
 
 class playership(pygame.sprite.Sprite):
 
@@ -11,9 +12,14 @@ class playership(pygame.sprite.Sprite):
         self.y = 550
         self.mover = 0
         self.image = pygame.image.load(PLAYERSHIP_IMAGE)    
-        self.image = pygame.transform.scale(self.image,(84,50))  
+        self.image = pygame.transform.scale(self.image,(84,50))     
         self.rect = self.image.get_rect() 
-        self.width = self.image.get_rect().width     
+        self.width = self.image.get_rect().width    
+        self.invencivel = False   
+        self.dead = False
+        self.vidas = 5
+        self.pontuacao = 0
+        self.tempo_invencivel = 0
 
     def movimento(self,screen):       
         self.x += self.mover
@@ -60,3 +66,18 @@ class laser(pygame.sprite.Sprite):
     def teste_colisao(self,sprite):
         if(self.image!=0):
             return self.rect.colliderect(sprite.rect)
+
+class explosion():
+
+    def __init__(self):
+        self.image = pygame.image.load(EXPLOSION_IMAGE)
+        self.image = pygame.transform.scale(self.image,(84,50))   
+        self.x = 0
+        self.y = 0
+
+    def set_xy(self,x,y):
+        self.x = x
+        self.y = y
+
+    def explode(self,screen):
+        screen.blit(self.image,(self.x,self.y)) 

@@ -1,13 +1,20 @@
 
-1. Fazer colisão do tiro do alien
-1.2 Fazer vidas do jogador
-1.3 Fazer todos as fileiras de aliens atirarem
-2. Fazer pontuação
-2.1 Fazer tela de game over 
-3. Fazer aliens ficarem mais rápidos quando morrem
-4. Fazer alienship
-5. Fazer menu inicial
-5.1 Fazer pause ?
-5.2 Fazer botão de resetar
-6. Por áudio
-6.1 Acertar assets finais
+1. Fazer colisão do tiro do alien //OK
+    1.2 Fazer vidas do jogador //OK
+    1.3 Fazer jogador resetar quando morre //OK
+    1.4 Fazer tela de game over //OK
+    1.5 Fazer botão de resetar //OK
+2. Fazer pontuação //OK
+    2.1 Por pontuação na tela de game over //OK
+3. Fazer todos a primeira fileira atirar aleatório
+    3.1 Fazer todas as fileiras atirarem
+4. Fazer aliens ficarem mais rápidos quando tem menos aliens
+5. Fazer barreira entre jogador e aliens
+6. Ajustes finais que precisar
+Extras -
+    1. Exibir pontuação, vidas e reset na tela
+    2. Fazer nave alien aleatória
+    3. Por mais fases
+    4. Acertar assets finais
+    5. Por sons e música
+    
