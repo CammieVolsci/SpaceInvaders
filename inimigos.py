@@ -7,7 +7,7 @@ class alien(pygame.sprite.Sprite):
     def __init__(self,x,y,alien_image1,alien_image2):
         self.x = x
         self.y = y
-        self.mover = 5
+        self.mover = 4
         self.direcao = "Direita"
         self.image1 = pygame.image.load(alien_image1)
         self.image1 = pygame.transform.scale(self.image1,(50,36))
@@ -17,15 +17,16 @@ class alien(pygame.sprite.Sprite):
         self.laser = []
         self.tiro = 'Desativado'
         self.total_tiro = 0
+        self.status = True
 
-    def movimento(self,screen,distancia,i,total, time_frame):       
+    def movimento(self,screen,distancia,i,total,time_frame,velocidade):       
         self.x += self.mover
 
         if self.x + (total-1-i)*(100+distancia) >=688:
-            self.mover = -5
+            self.mover = -velocidade
             self.direcao = "Esquerda"
         elif self.x - i*(100+distancia) <=0:
-            self.mover = 5
+            self.mover = velocidade
             self.direcao = "Direita"
 
         if self.image1 != 0 or self.image2 != 0:
@@ -44,6 +45,7 @@ class alien(pygame.sprite.Sprite):
         self.x = 0
         self.y = 0
         self.rect = 0
+        self.status = False
    
 class laser(pygame.sprite.Sprite):
     

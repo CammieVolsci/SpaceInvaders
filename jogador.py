@@ -17,7 +17,7 @@ class playership(pygame.sprite.Sprite):
         self.width = self.image.get_rect().width    
         self.invencivel = False   
         self.dead = False
-        self.vidas = 5
+        self.vidas = 50
         self.pontuacao = 0
         self.tempo_invencivel = 0
 
