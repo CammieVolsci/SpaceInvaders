@@ -7,10 +7,9 @@ TIRO_TIME = 0
 DISPLAYSURF = None
 FPSCLOCK = None
 
+WHITE = (255,255,255)
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 650
-
-BACKGROUND_COLOR = (255,255,255)
 BACKGROUND_IMAGE = "assets/vialactea.png"
 ICON_IMAGE = "assets/alien1c.png"
 
@@ -23,19 +22,27 @@ def main():
     global DISPLAYSURF, FPSCLOCK, ALIEN_NUMBER, ALIEN_TOTAL, FRAME_TIME, TIRO_TIME
 
     pygame.init()
-    random.seed(datetime.time())    
+    random.seed(datetime.time())
+    pygame.display.set_caption("Space Invaders")  
+
     FPSCLOCK = pygame.time.Clock()   
-    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)  
+    BASICFONT = pygame.font.Font('freesansbold.ttf', 32)
+    SMALLFONT = pygame.font.Font('freesansbold.ttf', 14)
     DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH,WINDOW_HEIGHT))
-    pygame.display.set_caption("Space Invaders")   
+
     game_icon = pygame.image.load(ICON_IMAGE).convert()
+    pygame.display.set_icon(game_icon)
     game_bg = pygame.image.load(BACKGROUND_IMAGE).convert()
     game_bg = pygame.transform.scale(game_bg,(WINDOW_WIDTH, WINDOW_HEIGHT))
-    pygame.display.set_icon(game_icon)
+
+    resetSurf = SMALLFONT.render('Pressione R para reiniciar ',True,WHITE)
+    resetRect = resetSurf.get_rect()
+    resetRect.center = (700, 20)
 
     player = jogador.playership()
     player_laser = jogador.laser()
     explosion = jogador.explosion()
+
     alien_row1 = []
     alien_row2 = [] 
     alien_row3 = []    
@@ -51,17 +58,25 @@ def main():
         TIRO_TIME  += FPSCLOCK.get_time()
         player.tempo_invencivel += FPSCLOCK.get_time()
         pontuacao_txt = str(player.pontuacao) 
-        gameOverSurf = BASICFONT.render('Game Over :< Pontuacao: ' + pontuacao_txt,True,(255,255,255))
+        vidas_txt = str(player.vidas)
+
+        gameOverSurf = BASICFONT.render('Game Over :< Pontuacao: ' + pontuacao_txt,True,WHITE)
         gameOverRect = gameOverSurf.get_rect()
         gameOverRect.center = (400, 325)  
-        resetSurf = BASICFONT.render('Pressione R para reiniciar ',True,(255,255,255))
-        resetRect = gameOverSurf.get_rect()
-        resetRect.center = (400, 400)  
+          
+        pontuacaoSurf = SMALLFONT.render('Score: ' + pontuacao_txt,True,WHITE)
+        pontuacaoRect = pontuacaoSurf.get_rect()
+        pontuacaoRect.center = (50,20)
 
-        DISPLAYSURF.fill(BACKGROUND_COLOR)
+        vidasSurf = SMALLFONT.render('Life: ' + vidas_txt,True,WHITE)
+        vidasRect = vidasSurf.get_rect()
+        vidasRect.center = (140,20)
+
+        DISPLAYSURF.fill(WHITE)
         DISPLAYSURF.blit(game_bg,(0,0))
-
-        print(ALIEN_TOTAL)
+        DISPLAYSURF.blit(pontuacaoSurf,pontuacaoRect)
+        DISPLAYSURF.blit(vidasSurf,vidasRect)
+        DISPLAYSURF.blit(resetSurf,resetRect)    
 
         if FRAME_TIME > 300:
             FRAME_TIME = 0                 
@@ -86,8 +101,11 @@ def main():
 
         if player.vidas <= 0:
             player.dead = True
-            DISPLAYSURF.blit(gameOverSurf,gameOverRect)
-            DISPLAYSURF.blit(resetSurf,resetRect)          
+            DISPLAYSURF.blit(gameOverSurf,gameOverRect)     
+
+        if ALIEN_TOTAL <= 0:
+            reset_jogo(player,alien_row1,alien_row2,alien_row3)
+            ALIEN_TOTAL = ALIEN_NUMBER * 3
 
         if player.invencivel and player.tempo_invencivel < 300:      
             explosion.explode(DISPLAYSURF)                 
@@ -98,13 +116,13 @@ def main():
     
         movimento_jogador(player,player_laser,alien_row1,alien_row2,alien_row3)     
         movimento_aliens(alien_row1,alien_row2,alien_row3)      
-        atira_nos_aliens(player,player_laser,alien_row1,alien_row2,alien_row3)      
-        alien_atira(alien_row1,alien_row2,alien_row3,player,explosion)                          
+        tiros_do_jogador(player,player_laser,alien_row1,alien_row2,alien_row3)      
+        tiros_dos_aliens(alien_row1,alien_row2,alien_row3,player,explosion)   
+                               
         pygame.display.update()  
         FPSCLOCK.tick(FPS)     
 
-
-def movimento_jogador(player,player_laser,alien_row1,alien_row2,alien_row3):
+def movimento_jogador(player, player_laser, alien_row1, alien_row2, alien_row3):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.display.quit()
@@ -124,7 +142,7 @@ def movimento_jogador(player,player_laser,alien_row1,alien_row2,alien_row3):
             if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
                 player.mover = 0
 
-def movimento_aliens(alien_row1,alien_row2,alien_row3):
+def movimento_aliens(alien_row1, alien_row2, alien_row3):
     global ALIEN_NUMBER, FRAME_TIME, DISPLAYSURF, ALIEN_TOTAL   
 
     for i in range(ALIEN_NUMBER): 
@@ -145,7 +163,7 @@ def movimento_aliens(alien_row1,alien_row2,alien_row3):
             alien_row2[i].movimento(DISPLAYSURF, ALIEN_SEPARACAO, i, ALIEN_NUMBER, FRAME_TIME, 7)
             alien_row3[i].movimento(DISPLAYSURF, ALIEN_SEPARACAO, i, ALIEN_NUMBER, FRAME_TIME, 7)
 
-def atira_nos_aliens(player,player_laser,alien_row1,alien_row2,alien_row3):
+def tiros_do_jogador(player, player_laser, alien_row1, alien_row2, alien_row3):
     global DISPLAYSURF, ALIEN_NUMBER, ALIEN_TOTAL
 
     if player_laser.state == "Atirando":
@@ -167,7 +185,7 @@ def atira_nos_aliens(player,player_laser,alien_row1,alien_row2,alien_row3):
                 ALIEN_TOTAL -= 1
                 player_laser.reset(player.x,player.y)
 
-def alien_atira(alien_row1,alien_row2,alien_row3,player,explosion):
+def tiros_dos_aliens(alien_row1, alien_row2, alien_row3, player,explosion):
     global DISPLAYSURF, WINDOW_HEIGHT, ALIEN_NUMBER
 
     for i in range(ALIEN_NUMBER):
@@ -222,17 +240,20 @@ def alien_atira(alien_row1,alien_row2,alien_row3,player,explosion):
             alien_row3[i].laser = tiro_novo[:]
             alien_row3[i].total_tiro = tira_total_novo
 
-def reset_jogo(player,alien_row1,alien_row2,alien_row3):
-    global ALIEN_NUMBER
+def reset_jogo(player, alien_row1, alien_row2, alien_row3):
+    global ALIEN_NUMBER, ALIEN_SEPARACAO
 
-    alien_row1.clear()
-    alien_row2.clear()
-    alien_row3.clear()
-    player.pontuacao = 0
-    player.vidas = 5
+    if ALIEN_NUMBER > 0:
+        player.pontuacao = 0
+        player.vidas = 5
+
     player.dead = False
     player.invencivel = False
     player.tempo_invencivel = 0
+
+    alien_row1.clear()
+    alien_row2.clear()
+    alien_row3.clear()   
 
     for i in range(ALIEN_NUMBER):
         alien_row1.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),50,"assets/alien1.png","assets/alien2.png"))

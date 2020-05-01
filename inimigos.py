@@ -1,6 +1,7 @@
 import pygame
 
 LASER_IMAGE = "assets/laser2.png"
+ALIENSHIP_IMAGE = "assets/alienship.png"
 
 class alien(pygame.sprite.Sprite):
 
@@ -87,3 +88,20 @@ class laser(pygame.sprite.Sprite):
         self.rect = 0
         self.height = 0
         self.state = 0
+
+class alienship(pygame.sprite.Sprite):
+
+    def __init__(self):
+        super().__init__()
+        self.x = 0
+        self.y = 0
+        self.mover = 0
+        self.image = pygame.image.load(ALIENSHIP_IMAGE)
+        self.image = pygame.transform.scale(self.image,(10,25))
+        self.rect = self.image.get_rect()
+
+    def kill(self):
+        self.image = 0
+        self.x = 0
+        self.y = 0
+        self.rect = 0

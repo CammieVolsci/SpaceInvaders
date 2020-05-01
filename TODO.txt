@@ -9,11 +9,11 @@
 3. Fazer todos a primeira fileira atirar aleatório //OK
     3.1 Fazer todas as fileiras atirarem //OK
 4. Fazer aliens ficarem mais rápidos quando tem menos aliens //OK
-5. Gerar mais aliens quando os atuais forem derrotados (mais fases)
+5. Gerar mais aliens quando os atuais forem derrotados (mais fases) //OK
 6. Fazer barreira entre jogador e aliens
 7. Ajustes finais que precisar
 Extras -
-    1. Exibir pontuação, vidas e reset na tela
+    1. Exibir pontuação, vidas e reset na tela //OK
     2. Fazer nave alien aleatória
     3. Acertar assets finais
     4. Por sons e música
