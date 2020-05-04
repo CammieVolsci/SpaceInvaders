@@ -10,8 +10,9 @@
     3.1 Fazer todas as fileiras atirarem //OK
 4. Fazer aliens ficarem mais rápidos quando tem menos aliens //OK
 5. Gerar mais aliens quando os atuais forem derrotados (mais fases) //OK
-6. Fazer barreira entre jogador e aliens
+6. Fazer barreira entre jogador e aliens //OK
 7. Ajustes finais que precisar
+    7.1 Bug quando dá proxima fase perde a pontuação
 Extras -
     1. Exibir pontuação, vidas e reset na tela //OK
     2. Fazer nave alien aleatória

@@ -1,4 +1,5 @@
-import pygame, sys, jogador, inimigos, random, datetime
+import datetime, pygame, random, sys
+import cenario, jogador, inimigos
 
 ## variáveis globais ##
 FPS = 30
@@ -16,10 +17,11 @@ ICON_IMAGE = "assets/alien1c.png"
 ALIEN_NUMBER = 5
 ALIEN_SEPARACAO = 5
 ALIEN_TOTAL = ALIEN_NUMBER * 3
+SHIELD_SIZE = 20
 
 ## MAIN ##
 def main():
-    global DISPLAYSURF, FPSCLOCK, ALIEN_NUMBER, ALIEN_TOTAL, FRAME_TIME, TIRO_TIME
+    global DISPLAYSURF, FPSCLOCK, ALIEN_NUMBER, ALIEN_TOTAL, FRAME_TIME, TIRO_TIME, SHIELD_SIZE
 
     pygame.init()
     random.seed(datetime.time())
@@ -42,6 +44,10 @@ def main():
     player = jogador.playership()
     player_laser = jogador.laser()
     explosion = jogador.explosion()
+    
+    shield1 = []
+    shield2 = []
+    shield3 = []
 
     alien_row1 = []
     alien_row2 = [] 
@@ -51,6 +57,11 @@ def main():
         alien_row1.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),50,"assets/alien1.png","assets/alien2.png"))
         alien_row2.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),130,"assets/alien1c.png","assets/alien2c.png"))
         alien_row3.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),210,"assets/alien1e.png","assets/alien2e.png"))
+
+    for i in range(SHIELD_SIZE):
+        shield1.append(cenario.shield(50 + i*10,450))
+        shield2.append(cenario.shield(300 + i*10,450))
+        shield3.append(cenario.shield(550 + i*10,450))
 
     ## Game loop
     while True:        
@@ -76,7 +87,12 @@ def main():
         DISPLAYSURF.blit(game_bg,(0,0))
         DISPLAYSURF.blit(pontuacaoSurf,pontuacaoRect)
         DISPLAYSURF.blit(vidasSurf,vidasRect)
-        DISPLAYSURF.blit(resetSurf,resetRect)    
+        DISPLAYSURF.blit(resetSurf,resetRect) 
+
+        for i in range(SHIELD_SIZE):
+            shield1[i].desenha_escudo(DISPLAYSURF)
+            shield2[i].desenha_escudo(DISPLAYSURF)                   
+            shield3[i].desenha_escudo(DISPLAYSURF)     
 
         if FRAME_TIME > 300:
             FRAME_TIME = 0                 
@@ -104,7 +120,7 @@ def main():
             DISPLAYSURF.blit(gameOverSurf,gameOverRect)     
 
         if ALIEN_TOTAL <= 0:
-            reset_jogo(player,alien_row1,alien_row2,alien_row3)
+            reset_jogo(player,alien_row1,alien_row2,alien_row3,shield1,shield2,shield3)
             ALIEN_TOTAL = ALIEN_NUMBER * 3
 
         if player.invencivel and player.tempo_invencivel < 300:      
@@ -114,7 +130,8 @@ def main():
             player.tempo_invencivel = 0
             player.invencivel = False
     
-        movimento_jogador(player,player_laser,alien_row1,alien_row2,alien_row3)     
+        colisao_escudo(player,player_laser,alien_row1,alien_row2,alien_row3,shield1,shield2,shield3)
+        movimento_jogador(player,player_laser,alien_row1,alien_row2,alien_row3,shield1,shield2,shield3)     
         movimento_aliens(alien_row1,alien_row2,alien_row3)      
         tiros_do_jogador(player,player_laser,alien_row1,alien_row2,alien_row3)      
         tiros_dos_aliens(alien_row1,alien_row2,alien_row3,player,explosion)   
@@ -122,14 +139,14 @@ def main():
         pygame.display.update()  
         FPSCLOCK.tick(FPS)     
 
-def movimento_jogador(player, player_laser, alien_row1, alien_row2, alien_row3):
+def movimento_jogador(player, player_laser, alien_row1, alien_row2, alien_row3, shield1, shield2, shield3):
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.display.quit()
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r:
-                reset_jogo(player,alien_row1,alien_row2,alien_row3)
+                reset_jogo(player, alien_row1, alien_row2, alien_row3, shield1, shield2, shield3)
             if event.key == pygame.K_LEFT and not player.dead: 
                 player.mover = -8
             if event.key == pygame.K_RIGHT and not player.dead:
@@ -240,7 +257,62 @@ def tiros_dos_aliens(alien_row1, alien_row2, alien_row3, player,explosion):
             alien_row3[i].laser = tiro_novo[:]
             alien_row3[i].total_tiro = tira_total_novo
 
-def reset_jogo(player, alien_row1, alien_row2, alien_row3):
+def colisao_escudo(player, player_laser, alien_row1, alien_row2, alien_row3, shield1, shield2, shield3):
+    global ALIEN_NUMBER, SHIELD_SIZE
+
+    for i in range(SHIELD_SIZE):
+        if shield1[i].rect != 0 and player_laser.teste_colisao(shield1[i]):
+            shield1[i].kill()
+            player_laser.reset(player.x,player.y)          
+        for j in range(ALIEN_NUMBER):          
+            for k in range(alien_row3[j].total_tiro):
+                if shield1[i].rect != 0 and alien_row3[j].laser[k].teste_colisao(shield1[i]):
+                    shield1[i].kill()
+                    alien_row3[j].laser[k].reset(alien_row3[j].x,alien_row3[j].y)
+            for k in range(alien_row2[j].total_tiro):
+                if shield1[i].rect != 0 and alien_row2[j].laser[k].teste_colisao(shield1[i]):
+                    shield1[i].kill()
+                    alien_row2[j].laser[k].reset(alien_row2[j].x,alien_row2[j].y)
+            for k in range(alien_row1[j].total_tiro):
+                if shield1[i].rect != 0 and alien_row1[j].laser[k].teste_colisao(shield1[i]):
+                    shield1[i].kill()
+                    alien_row1[j].laser[k].reset(alien_row1[j].x,alien_row1[j].y)
+        
+        if shield2[i].rect != 0 and player_laser.teste_colisao(shield2[i]):
+            shield2[i].kill()
+            player_laser.reset(player.x,player.y)          
+        for j in range(ALIEN_NUMBER):          
+            for k in range(alien_row3[j].total_tiro):
+                if shield2[i].rect != 0 and alien_row3[j].laser[k].teste_colisao(shield2[i]):
+                    shield2[i].kill()
+                    alien_row3[j].laser[k].reset(alien_row3[j].x,alien_row3[j].y)
+            for k in range(alien_row2[j].total_tiro):
+                if shield2[i].rect != 0 and alien_row2[j].laser[k].teste_colisao(shield2[i]):
+                    shield2[i].kill()
+                    alien_row2[j].laser[k].reset(alien_row2[j].x,alien_row2[j].y)
+            for k in range(alien_row1[j].total_tiro):
+                if shield2[i].rect != 0 and alien_row1[j].laser[k].teste_colisao(shield2[i]):
+                    shield2[i].kill()
+                    alien_row1[j].laser[k].reset(alien_row1[j].x,alien_row1[j].y)
+
+        if shield3[i].rect != 0 and player_laser.teste_colisao(shield3[i]):
+            shield3[i].kill()
+            player_laser.reset(player.x,player.y)          
+        for j in range(ALIEN_NUMBER):          
+            for k in range(alien_row3[j].total_tiro):
+                if shield3[i].rect != 0 and alien_row3[j].laser[k].teste_colisao(shield3[i]):
+                    shield3[i].kill()
+                    alien_row3[j].laser[k].reset(alien_row3[j].x,alien_row3[j].y)
+            for k in range(alien_row2[j].total_tiro):
+                if shield3[i].rect != 0 and alien_row2[j].laser[k].teste_colisao(shield3[i]):
+                    shield3[i].kill()
+                    alien_row2[j].laser[k].reset(alien_row2[j].x,alien_row2[j].y)
+            for k in range(alien_row1[j].total_tiro):
+                if shield3[i].rect != 0 and alien_row1[j].laser[k].teste_colisao(shield3[i]):
+                    shield3[i].kill()
+                    alien_row1[j].laser[k].reset(alien_row1[j].x,alien_row1[j].y)
+
+def reset_jogo(player, alien_row1, alien_row2, alien_row3, shield1, shield2, shield3):
     global ALIEN_NUMBER, ALIEN_SEPARACAO
 
     if ALIEN_NUMBER > 0:
@@ -255,10 +327,19 @@ def reset_jogo(player, alien_row1, alien_row2, alien_row3):
     alien_row2.clear()
     alien_row3.clear()   
 
+    shield1.clear()
+    shield2.clear()
+    shield3.clear()
+
     for i in range(ALIEN_NUMBER):
         alien_row1.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),50,"assets/alien1.png","assets/alien2.png"))
         alien_row2.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),130,"assets/alien1c.png","assets/alien2c.png"))
         alien_row3.append(inimigos.alien(50 + i*(100+ALIEN_SEPARACAO),210,"assets/alien1e.png","assets/alien2e.png"))
+
+    for i in range(SHIELD_SIZE):
+        shield1.append(cenario.shield(50 + i*10,450))
+        shield2.append(cenario.shield(300 + i*10,450))
+        shield3.append(cenario.shield(550 + i*10,450))
 
 ## MAIN ##
 if __name__ == '__main__':

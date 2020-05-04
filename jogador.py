@@ -4,10 +4,9 @@ PLAYERSHIP_IMAGE = "assets/playership.png"
 LASER_IMAGE = "assets/laser.png"
 EXPLOSION_IMAGE = "assets/explosion.png"
 
-class playership(pygame.sprite.Sprite):
+class playership():
 
     def __init__(self):
-        super().__init__()
         self.x = 390
         self.y = 550
         self.mover = 0

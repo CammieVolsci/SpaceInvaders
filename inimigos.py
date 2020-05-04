@@ -3,7 +3,7 @@ import pygame
 LASER_IMAGE = "assets/laser2.png"
 ALIENSHIP_IMAGE = "assets/alienship.png"
 
-class alien(pygame.sprite.Sprite):
+class alien():
 
     def __init__(self,x,y,alien_image1,alien_image2):
         self.x = x
@@ -89,10 +89,9 @@ class laser(pygame.sprite.Sprite):
         self.height = 0
         self.state = 0
 
-class alienship(pygame.sprite.Sprite):
+class alienship():
 
     def __init__(self):
-        super().__init__()
         self.x = 0
         self.y = 0
         self.mover = 0
