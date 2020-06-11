@@ -9,9 +9,9 @@ DISPLAYSURF = None
 FPSCLOCK = None
 
 WHITE = (255,255,255)
+BLACK = (0,0,0)
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 650
-BACKGROUND_IMAGE = "assets/vialactea.png"
 ICON_IMAGE = "assets/alien1c.png"
 
 ALIEN_NUMBER = 5
@@ -34,8 +34,6 @@ def main():
 
     game_icon = pygame.image.load(ICON_IMAGE).convert()
     pygame.display.set_icon(game_icon)
-    game_bg = pygame.image.load(BACKGROUND_IMAGE).convert()
-    game_bg = pygame.transform.scale(game_bg,(WINDOW_WIDTH, WINDOW_HEIGHT))
 
     resetSurf = SMALLFONT.render('Pressione R para reiniciar ',True,WHITE)
     resetRect = resetSurf.get_rect()
@@ -83,8 +81,7 @@ def main():
         vidasRect = vidasSurf.get_rect()
         vidasRect.center = (140,20)
 
-        DISPLAYSURF.fill(WHITE)
-        DISPLAYSURF.blit(game_bg,(0,0))
+        DISPLAYSURF.fill(BLACK)
         DISPLAYSURF.blit(pontuacaoSurf,pontuacaoRect)
         DISPLAYSURF.blit(vidasSurf,vidasRect)
         DISPLAYSURF.blit(resetSurf,resetRect) 
@@ -315,7 +312,7 @@ def colisao_escudo(player, player_laser, alien_row1, alien_row2, alien_row3, shi
 def reset_jogo(player, alien_row1, alien_row2, alien_row3, shield1, shield2, shield3):
     global ALIEN_NUMBER, ALIEN_SEPARACAO
 
-    if ALIEN_NUMBER > 0:
+    if ALIEN_NUMBER <= 0:
         player.pontuacao = 0
         player.vidas = 5
 

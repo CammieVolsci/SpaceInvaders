@@ -12,10 +12,10 @@
 5. Gerar mais aliens quando os atuais forem derrotados (mais fases) //OK
 6. Fazer barreira entre jogador e aliens //OK
 7. Ajustes finais que precisar
-    7.1 Bug quando dá proxima fase perde a pontuação
+    7.1 Bug quando dá proxima fase perde a pontuação //OK
 Extras -
     1. Exibir pontuação, vidas e reset na tela //OK
-    2. Fazer nave alien aleatória
-    3. Acertar assets finais
-    4. Por sons e música
+    2. Fazer nave alien aleatória //nope
+    3. Acertar assets finais //nope
+    4. Por sons e música //nope
     
